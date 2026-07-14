@@ -1,0 +1,28 @@
+{
+  "globalId": "4466d5a8-cb2b-4bc9-8dc8-ed903fab2fa2",
+  "namespace": {
+    "globalId": "570f3770-352f-424f-9574-3ac9b14a590f",
+    "name": "PAASysUpdates",
+    "description": "",
+    "isSystem": true
+  },
+  "name": "ChangeLogRed",
+  "description": "",
+  "defaultValue": "",
+  "cacheTimeSec": 0,
+  "cacheLayer": "global",
+  "replaceTokens": false,
+  "decodeHtml": false,
+  "stripHtmlTags": false,
+  "src": {
+    "type": "razor",
+    "compiledRazorLocation": "host",
+    "assemblies": "",
+    "debugScript": false,
+    "lang": "csharp",
+    "language": "csharp",
+    "params": [
+      "ChangeType"
+    ]
+  }
+}

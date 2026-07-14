@@ -1,0 +1,203 @@
+{
+  "InputFields": [],
+  "OutputFields": [
+    {
+      "Id": 57,
+      "Name": "AlertsJson",
+      "DefaultValue": "[AlertsJson=[]]",
+      "Type": "Output",
+      "InputType": "Text",
+      "EntityVersionId": null,
+      "WorkflowId": 27,
+      "ContractFieldId": null,
+      "IsDeleted": false,
+      "Required": false,
+      "Description": null,
+      "OrderIndex": 0
+    }
+  ],
+  "Id": 27,
+  "GlobalId": "897b24ed-a406-48da-9d04-0343aed29420",
+  "ContractId": null,
+  "ConfigGenerationGlobalId": "897b24ed-a406-48da-9d04-0343aed29420",
+  "EnvironmentId": 1,
+  "Name": "PaaSysHealthCheck - Bootstrap3 Forms",
+  "Description": "System Workflow - HealthCheck Bootstrap3 Forms",
+  "IsDebug": false,
+  "IsSystem": true,
+  "ActionList": {
+    "Id": 1681,
+    "GlobalId": "2e2e0093-6489-45a0-9d54-60deefdfe373",
+    "Actions": [
+      {
+        "Id": 1174,
+        "GlobalId": "3c86f7be-1a50-4068-8a2a-8f92e2edab3f",
+        "Description": "Run SQL Query",
+        "ActionErrorMessage": null,
+        "ActionStackId": 1681,
+        "ActionType": "RunSql",
+        "Condition": null,
+        "IsDeleted": false,
+        "IsDisabled": false,
+        "OrderIndex": 0,
+        "DiagramUID": "Activity_01zhsqo",
+        "ActionParameters": [
+          {
+            "Id": 5807,
+            "GlobalId": "3426aa22-81bb-4301-b3e0-f795bd2b9978",
+            "ActionId": 1174,
+            "Name": "ConnectionString",
+            "Value": null,
+            "ActionStackId": null,
+            "ParentParameterId": null,
+            "IsExpression": false,
+            "OrderIndex": 0,
+            "LastModified": "0001-01-01T00:00:00+00:00",
+            "LastModifiedBy": null
+          },
+          {
+            "Id": 5808,
+            "GlobalId": "9aac440a-7767-48e9-8b3f-47cec0401031",
+            "ActionId": 1174,
+            "Name": "QueryTimeout",
+            "Value": null,
+            "ActionStackId": null,
+            "ParentParameterId": null,
+            "IsExpression": false,
+            "OrderIndex": 0,
+            "LastModified": "0001-01-01T00:00:00+00:00",
+            "LastModifiedBy": null
+          },
+          {
+            "Id": 5809,
+            "GlobalId": "c7cb3307-69c7-4dce-aaa9-02236b095eaf",
+            "ActionId": 1174,
+            "Name": "UseTransactions",
+            "Value": true,
+            "ActionStackId": null,
+            "ParentParameterId": null,
+            "IsExpression": false,
+            "OrderIndex": 0,
+            "LastModified": "0001-01-01T00:00:00+00:00",
+            "LastModifiedBy": null
+          },
+          {
+            "Id": 5810,
+            "GlobalId": "b7ee46d0-2267-4df1-bad3-979b964740d0",
+            "ActionId": 1174,
+            "Name": "SqlQuery",
+            "Value": "WITH ModulesCTE AS\r\n(\r\n    SELECT\r\n        fs.ModuleId AS resourceId,\r\n        'Medium' AS severity,\r\n        JSON_QUERY\r\n        (\r\n            (\r\n                SELECT\r\n                    t.TabID AS PageNumber,\r\n                    t.TabName AS PageName,\r\n                    tm.ModuleTitle,\r\n                    tm.PaneName,\r\n                    t.PortalID AS PortalId,\r\n                    pl.PortalName,\r\n                    m.ModuleID,\r\n                    'true' AS paa_preventMajorUpgrades\r\n                FOR JSON PATH, WITHOUT_ARRAY_WRAPPER\r\n            )\r\n        ) AS properties,\r\n        ROW_NUMBER() OVER\r\n        (\r\n            PARTITION BY fs.ModuleId\r\n            ORDER BY t.TabID\r\n        ) AS rn\r\n    FROM {databaseOwner}[{objectQualifier}avtActionForm_FormSettings] fs\r\n    INNER JOIN {databaseOwner}[{objectQualifier}Modules] m\r\n        ON m.ModuleID = fs.ModuleId\r\n    INNER JOIN {databaseOwner}[{objectQualifier}TabModules] tm\r\n        ON m.ModuleID = tm.ModuleID\r\n    INNER JOIN {databaseOwner}[{objectQualifier}Tabs] t\r\n        ON tm.TabID = t.TabID\r\n    OUTER APPLY\r\n    (\r\n        SELECT TOP (1)\r\n            pl.PortalName\r\n        FROM {databaseOwner}[{objectQualifier}PortalLocalization] pl\r\n        WHERE pl.PortalID = t.PortalID\r\n        ORDER BY\r\n            CASE WHEN pl.CultureCode = 'en-US' THEN 0 ELSE 1 END,\r\n            pl.CultureCode\r\n    ) pl\r\n    WHERE fs.Name = 'FormTemplate'\r\n      AND ISNULL(fs.Value, '') <> 'bootstrap5'\r\n      AND tm.IsDeleted = 0\r\n)\r\nSELECT\r\n(\r\n    SELECT\r\n        resourceId,\r\n        severity,\r\n        properties\r\n    FROM ModulesCTE\r\n    WHERE rn = 1\r\n    FOR JSON PATH\r\n) AS PAASysAlerts;",
+            "ActionStackId": null,
+            "ParentParameterId": null,
+            "IsExpression": false,
+            "OrderIndex": 0,
+            "LastModified": "0001-01-01T00:00:00+00:00",
+            "LastModifiedBy": null
+          },
+          {
+            "Id": 5811,
+            "GlobalId": "edf02a0d-02ad-4417-acf2-b79acf99337b",
+            "ActionId": 1174,
+            "Name": "OnError",
+            "Value": {
+              "Id": 1682,
+              "GlobalId": "2899d61a-85f0-4230-b3f8-f560e6c67b76",
+              "Actions": [],
+              "IsInvalid": false
+            },
+            "ActionStackId": 1682,
+            "ParentParameterId": null,
+            "IsExpression": false,
+            "OrderIndex": 0,
+            "LastModified": "0001-01-01T00:00:00+00:00",
+            "LastModifiedBy": null
+          },
+          {
+            "Id": 5812,
+            "GlobalId": "1ca5a3c7-6738-4000-9b76-a53be7f08b78",
+            "ActionId": 1174,
+            "Name": "ShowErrors",
+            "Value": true,
+            "ActionStackId": null,
+            "ParentParameterId": null,
+            "IsExpression": false,
+            "OrderIndex": 0,
+            "LastModified": "0001-01-01T00:00:00+00:00",
+            "LastModifiedBy": null
+          },
+          {
+            "Id": 5813,
+            "GlobalId": "7fdcab78-a660-457d-9f1d-fd9b242f1a4a",
+            "ActionId": 1174,
+            "Name": "DbConnector",
+            "Value": {
+              "Entry": "",
+              "Group": "",
+              "EntireGroup": false,
+              "Type": "Database",
+              "IsExpression": false,
+              "Expression": ""
+            },
+            "ActionStackId": null,
+            "ParentParameterId": null,
+            "IsExpression": false,
+            "OrderIndex": 0,
+            "LastModified": "0001-01-01T00:00:00+00:00",
+            "LastModifiedBy": null
+          },
+          {
+            "Id": 5814,
+            "GlobalId": "106ad802-3269-4c18-b234-d71b56617d69",
+            "ActionId": 1174,
+            "Name": "BindTokens",
+            "Value": [],
+            "ActionStackId": null,
+            "ParentParameterId": null,
+            "IsExpression": false,
+            "OrderIndex": 0,
+            "LastModified": "0001-01-01T00:00:00+00:00",
+            "LastModifiedBy": null
+          },
+          {
+            "Id": 5815,
+            "GlobalId": "e02d1781-b5c4-49ce-9e41-751821fbe1d7",
+            "ActionId": 1174,
+            "Name": "OutputTokenName",
+            "Value": "AlertsJson",
+            "ActionStackId": null,
+            "ParentParameterId": null,
+            "IsExpression": false,
+            "OrderIndex": 0,
+            "LastModified": "0001-01-01T00:00:00+00:00",
+            "LastModifiedBy": null
+          },
+          {
+            "Id": 5816,
+            "GlobalId": "06164736-363b-49a1-863c-16682c495fa9",
+            "ActionId": 1174,
+            "Name": "ExtractColumns",
+            "Value": [],
+            "ActionStackId": null,
+            "ParentParameterId": null,
+            "IsExpression": false,
+            "OrderIndex": 0,
+            "LastModified": "0001-01-01T00:00:00+00:00",
+            "LastModifiedBy": null
+          }
+        ],
+        "Parameters": {},
+        "Metadata": {},
+        "HasActionParameters": false
+      }
+    ],
+    "IsInvalid": false
+  },
+  "ActionStackId": 0,
+  "CreatedBy": -1,
+  "CreatedOn": "2026-05-05T09:16:10.757402+00:00",
+  "LastModifiedBy": -1,
+  "LastModifiedOn": "2026-06-05T10:16:10.757402+00:00",
+  "DiagramXML": null,
+  "IsCorrupted": false,
+  "NamespaceUid": "7c267b0c-9d16-4d75-a1b6-11276424627e"
+}
